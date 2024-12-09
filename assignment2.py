@@ -1,91 +1,38 @@
 #!/usr/bin/env python3
-
-'''
-OPS445 Assignment 2
-Program: assignment2.py 
-Author: "Student Name"
-Semester: "Enter Winter/Summer/Fall Year"
-
-The python code in this file is original work written by
-"Student Name". No code in this file is copied from any other source 
-except those provided by the course instructor, including any person, 
-textbook, or on-line resource. I have not shared this python script 
-with anyone or anything except for submission for grading.  
-I understand that the Academic Honesty Policy will be enforced and 
-violators will be reported and appropriate action will be taken.
-
-Description: <Enter your documentation here>
-
-'''
+#Nirmal Gautam-ngautam11-ops445-168555225
+# Nirmal Gautam - ngautam11 - OPS445 - Assignment 2A
+# This script visualizes memory usage of a system and its processes with bar charts.
+# It is my original work of Nirmal Gautam and was developed as part of the OPS445 course.
+# The script allows for viewing system memory and the memory usage of specified programs. and this is Created on :8th  December 2024
 
 import argparse
-import os, sys
+import os
+import sys
 
 def parse_command_args() -> object:
-    "Set up argparse here. Call this function inside main."
-    parser = argparse.ArgumentParser(description="Memory Visualiser -- See Memory Usage Report with bar charts",epilog="Copyright 2023")
+    parser = argparse.ArgumentParser(description="Memory Visualiser -- See Memory Usage Report with bar charts")
     parser.add_argument("-l", "--length", type=int, default=20, help="Specify the length of the graph. Default is 20.")
-    # add argument for "human-readable". USE -H, don't use -h! -h is reserved for --help which is created automatically.
-    # check the docs for an argparse option to store this as a boolean.
-    parser.add_argument("program", type=str, nargs='?', help="if a program is specified, show memory use of all associated processes. Show only total use is not.")
-    args = parser.parse_args()
-    return args
-# create argparse function
-# -H human readable
-# -r running only
+    parser.add_argument("-H", "--human-readable", action="store_true", help="Prints sizes in Human readable format.")
+    parser.add_argument("program", type=str, nargs='?', help="If a program is specified, show memory use of all associated processes. Show only total use if not.")
+    return parser.parse_args()
+
+#Here this creates argparse function and for to make human readable i used -h and -r for running only
 
 def percent_to_graph(percent: float, length: int=20) -> str:
-    "turns a percent 0.0 - 1.0 into a bar graph"
-    ...
-# percent to graph function
+    num_hashes = int(round(percent * length))
+    return f"[{'#' * num_hashes}{' ' * (length - num_hashes)}]"  
+#bar graph string
+#Here this is for percentage to graph function
 
 def get_sys_mem() -> int:
-    "return total system memory (used or available) in kB"
-    ...
+    with open('/proc/meminfo', 'r') as f:
+        for line in f:
+            if 'MemTotal' in line:
+                return int(line.split()[1])
 
 def get_avail_mem() -> int:
-    "return total memory that is available"
-    ...
-
-def pids_of_prog(app_name: str) -> list:
-    "given an app name, return all pids associated with app"
-    ...
-
-def rss_mem_of_pid(proc_id: str) -> int:
-    "given a process id, return the resident memory used, zero if not found"
-    ...
-
-def bytes_to_human_r(kibibytes: int, decimal_places: int=2) -> str:
-    "turn 1,024 into 1 MiB, for example"
-    suffixes = ['KiB', 'MiB', 'GiB', 'TiB', 'PiB']  # iB indicates 1024
-    suf_count = 0
-    result = kibibytes 
-    while result > 1024 and suf_count < len(suffixes):
-        result /= 1024
-        suf_count += 1
-    str_result = f'{result:.{decimal_places}f} '
-    str_result += suffixes[suf_count]
-    return str_result
-
-if __name__ == "__main__":
-    args = parse_command_args()
-    if not args.program:
-        ...
-    else:
-        ...
-    # process args
-    # if no parameter passed, 
-    # open meminfo.
-    # get used memory
-    # get total memory
-    # call percent to graph
-    # print
-
-    # if a parameter passed:
-    # get pids from pidof
-    # lookup each process id in /proc
-    # read memory used
-    # add to total used
-    # percent to graph
-    # take total our of total system memory? or total used memory? total used memory.
-    # percent to graph.
+    with open('/proc/meminfo', 'r') as f:
+        for line in f:
+            if 'MemAvailable' in line:
+                return int(line.split()[1])
+#Assignment1-milestone1 done
