@@ -36,3 +36,19 @@ def get_avail_mem() -> int:
             if 'MemAvailable' in line:
                 return int(line.split()[1])
 #Assignment1-milestone1 done
+def pids_of_prog(app_name: str) -> list:
+    pids = os.popen(f'pidof {app_name}').read().strip().split()
+    return pids if pids else []
+
+def rss_mem_of_pid(proc_id: str) -> int:
+    rss_mem = 0
+    try:
+        with open(f'/proc/{proc_id}/smaps', 'r') as f:
+            for line in f:
+                if 'Rss:' in line:
+                    rss_mem += int(line.split()[1])
+    except FileNotFoundError:
+        pass
+    return rss_mem
+
+#Assignment2-milestone2 done
