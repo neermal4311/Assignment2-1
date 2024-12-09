@@ -52,3 +52,66 @@ def rss_mem_of_pid(proc_id: str) -> int:
     return rss_mem
 
 #Assignment2-milestone2 done
+
+
+
+
+
+def bytes_to_human_r(kibibytes: int, decimal_places: int=2) -> str:
+    suffixes = ['KiB', 'MiB', 'GiB', 'TiB', 'PiB']   #here iB means 1024
+    suffix_index = 0
+    while kibibytes >= 1024 and suffix_index < len(suffixes) - 1:
+        kibibytes /= 1024.0
+        suffix_index += 1
+    return f"{kibibytes:.{decimal_places}f} {suffixes[suffix_index]}"
+
+if __name__ == "__main__":
+    args = parse_command_args()
+
+    if not args.program:
+        total_mem = get_sys_mem()
+        avail_mem = get_avail_mem()
+        used_mem = total_mem - avail_mem
+        used_percent = used_mem / total_mem
+        graph = percent_to_graph(used_percent, args.length)
+        if args.human_readable:
+            total_mem = bytes_to_human_r(total_mem)
+            used_mem = bytes_to_human_r(used_mem)
+        print(f"Memory {graph} {int(used_percent * 100)}% {used_mem}/{total_mem}")
+    else:
+        pids = pids_of_prog(args.program)
+        if not pids:
+            print(f"{args.program} not found.")
+            sys.exit()
+        for pid in pids:
+            rss = rss_mem_of_pid(pid)
+            rss_percent = rss / get_sys_mem()
+            graph = percent_to_graph(rss_percent, args.length)
+            if args.human_readable:
+                rss = bytes_to_human_r(rss)
+            print(f"{pid:6} {graph} {rss}")
+
+
+
+ # process args
+    # if no parameter passed, 
+    # open meminfo.
+    # get used memory
+    # get total memory
+    # call percent to graph
+    # print
+
+    # if a parameter passed:
+    # get pids from pidof
+    # lookup each process id in /proc
+    # read memory used
+    # add to total used
+    # percent to graph
+    # take total our of total system memory? or total used memory? total used memory.
+    # percent to graph.
+
+
+#Thank you for looking at my work!
+# I sincerely hope you find my script useful since it offers a straightforward and graphical method of keeping an eye on memory utilization on a Linux machine.
+# Any and all comments are valued. As part of the homework for the OPS445 course, I made this original piece of work.
+
